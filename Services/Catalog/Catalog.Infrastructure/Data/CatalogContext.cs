@@ -11,6 +11,7 @@ namespace Catalog.Infrastructure.Data
 {
     public class CatalogContext : ICatalogContext
     {
+        //Tuong duong voi DbSet<T> trong EF Core
         public IMongoCollection<Product> Products { get; }
 
         public IMongoCollection<ProductBrand> Brands { get; }
