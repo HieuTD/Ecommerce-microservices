@@ -28,8 +28,7 @@ namespace Catalog.Application.Handlers
             {
                 throw new ApplicationException("There is an issue with mapping while updating product");
             }
-            var updateProduct = await _productRepository.UpdateProduct(productEntity);
-            return true;
+            return await _productRepository.UpdateProduct(productEntity);
         }
     }
 }
