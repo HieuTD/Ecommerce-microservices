@@ -41,7 +41,7 @@ namespace Catalog.API.Controllers
         [HttpGet]
         [Route("GetAllProducts")]
         [ProducesResponseType(typeof(Pagination<ProductResponse>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Pagination<ProductResponse>>> GetAllProducts(CatalogSpecParams catalogSpecParams)
+        public async Task<ActionResult<Pagination<ProductResponse>>> GetAllProducts([FromQuery] CatalogSpecParams catalogSpecParams)
         {
             var query = new GetAllProductsQuery(catalogSpecParams);
             var result = await _mediator.Send(query);
