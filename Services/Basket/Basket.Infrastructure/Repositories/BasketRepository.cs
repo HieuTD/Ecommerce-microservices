@@ -25,7 +25,7 @@ namespace Basket.Infrastructure.Repositories
             return JsonConvert.DeserializeObject<ShoppingCart>(basket);
         }
 
-        public async Task<ShoppingCart> UpdateBasket(ShoppingCart shoppingCart)
+        public async Task<ShoppingCart> CreateOrUpdateBasket(ShoppingCart shoppingCart)
         {
             //If the key in Redis exists → update it; if not → create new.
             await _redisCache.SetStringAsync(shoppingCart.UserName, JsonConvert.SerializeObject(shoppingCart));
