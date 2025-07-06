@@ -13,46 +13,63 @@ namespace Discount.Infrastructure.Extensions
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger<TContext>>();
+                var config = services.GetRequiredService<IConfiguration>();
+                var logger = services.GetRequiredService<ILogger<TContext>>();
                 try
                 {
                     logger.LogInformation("Discount DB Migration Started");
-                    ApplyMigration(config);
+                    ApplyMigrations(config);
                     logger.LogInformation("Discount DB Migration Completed");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    logger.LogError(ex, "An error occurred while migrating the database.");
                     throw;
                 }
             }
             return host;
         }
 
-        private static void ApplyMigration(IConfiguration config)
+        private static void ApplyMigrations(IConfiguration config)
         {
-            using var connection = new NpgsqlConnection(config.GetValue<string>("DatabaseSettings:ConnectionString"));
-            connection.Open();
-            var cmd = new NpgsqlCommand()
+            var retry = 5;
+            while (retry > 0)
             {
-                Connection = connection
-            };
-
-            cmd.CommandText = "DROP TABLE IF EXISTS Coupon";
-            cmd.ExecuteNonQuery();
-
-            cmd.CommandText = @"CREATE TABLE Coupon(Id SERIAL PRIMARY KEY, 
+                try
+                {
+                    using var connection = new NpgsqlConnection(config.GetValue<string>("DatabaseSettings:ConnectionString"));
+                    connection.Open();
+                    using var cmd = new NpgsqlCommand
+                    {
+                        Connection = connection
+                    };
+                    cmd.CommandText = "DROP TABLE IF EXISTS Coupon";
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = @"CREATE TABLE Coupon(Id SERIAL PRIMARY KEY, 
                                                     ProductName VARCHAR(500) NOT NULL,
                                                     Description TEXT,
                                                     Amount INT)";
-            cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
 
-            cmd.CommandText = "INSERT INTO Coupon(ProductName, Description, Amount) VALUES('Adidas Quick Force Indoor Badminton Shoes', 'Shoe Discount', 500);";
-            cmd.ExecuteNonQuery();
+                    cmd.CommandText = "INSERT INTO Coupon(ProductName, Description, Amount) VALUES('Adidas Quick Force Indoor Badminton Shoes', 'Shoe Discount', 500);";
+                    cmd.ExecuteNonQuery();
 
-            cmd.CommandText = "INSERT INTO Coupon(ProductName, Description, Amount) VALUES('Yonex VCORE Pro 100 A Tennis Racquet (270gm, Strung)', 'Racquet Discount', 700);";
-            cmd.ExecuteNonQuery();
+                    cmd.CommandText = "INSERT INTO Coupon(ProductName, Description, Amount) VALUES('Yonex VCORE Pro 100 A Tennis Racquet (270gm, Strung)', 'Racquet Discount', 700);";
+                    cmd.ExecuteNonQuery();
+                    // Exit loop if successful
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    retry--;
+                    if (retry == 0)
+                    {
+                        throw;
+                    }
+                    //Wait for 2 seconds
+                    Thread.Sleep(2000);
+                }
+            }
         }
     }
 }

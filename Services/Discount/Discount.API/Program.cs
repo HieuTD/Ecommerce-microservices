@@ -1,23 +1,49 @@
+﻿using Discount.API.Services;
+using Discount.Application.Handlers;
+using Discount.Core.Repositories;
+using Discount.Infrastructure.Extensions;
+using Discount.Infrastructure.Repositories;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//Register AutoMapper: scan cac lop ke thua Profile
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+//Register MediatR: Tu đong scan va đang ky cac handler (Ex: IRequestHandler, INotificationHandler) tu assembly hien tai
+var assemblies = new Assembly[]
+{
+    Assembly.GetExecutingAssembly(),
+    typeof(CreateDiscountCommandHandler).Assembly
+};
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
+
+//Register services
+builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+
+builder.Services.AddGrpc();
 
 var app = builder.Build();
+
+//Migrate Db
+app.MigrateDatabase<Program>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
-app.UseAuthorization();
+app.UseRouting();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGrpcService<DiscountService>();
+    endpoints.MapGet("/", async context =>
+    {
+        await context.Response.WriteAsync("Communication with grpc endpoints must be made through a grpc client");
+    });
+});
 
 app.Run();
