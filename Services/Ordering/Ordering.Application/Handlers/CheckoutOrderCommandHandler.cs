@@ -13,7 +13,7 @@ namespace Ordering.Application.Handlers
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public CheckoutOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper, ILogger logger)
+        public CheckoutOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper, ILogger<CheckoutOrderCommandHandler> logger)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;

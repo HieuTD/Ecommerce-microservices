@@ -13,7 +13,7 @@ namespace Ordering.Application.Handlers
         private readonly IOrderRepository _orderRepository;
         private readonly ILogger _logger;
 
-        public DeleteOrderCommandHandler(IOrderRepository orderRepository, ILogger logger)
+        public DeleteOrderCommandHandler(IOrderRepository orderRepository, ILogger<DeleteOrderCommandHandler> logger)
         {
             _orderRepository = orderRepository;
             _logger = logger;
