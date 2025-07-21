@@ -41,9 +41,9 @@ services:
     ports:
       - "1433:1433"
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Hieu@123' -Q 'select 1'"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Hieu@123' -C -Q 'select 1'"]
       interval: 10s
-      timeout: 10s
+      timeout: 15s
       retries: 3
 
   catalog.api:
@@ -61,6 +61,7 @@ services:
       - "8000:8080"
 
   basket.api:
+    container_name: basket.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "CacheSettings__ConnectionString=basketdb:6379"
