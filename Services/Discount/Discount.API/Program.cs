@@ -1,12 +1,16 @@
-﻿using Discount.API.Services;
+﻿using Common.Logging;
+using Discount.API.Services;
 using Discount.Application.Handlers;
 using Discount.Core.Repositories;
 using Discount.Infrastructure.Extensions;
 using Discount.Infrastructure.Repositories;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Serilog configuration
+builder.Host.UseSerilog(Logging.ConfigureLogger);
 
 //Register AutoMapper: scan cac lop ke thua Profile
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
