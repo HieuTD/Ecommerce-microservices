@@ -27,6 +27,7 @@ namespace Ordering.API.Controllers
             return Ok(orders);
         }
 
+        //For testing
         [HttpPost(Name = "CheckoutOrder")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
 
