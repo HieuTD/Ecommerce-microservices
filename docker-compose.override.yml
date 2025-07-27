@@ -40,6 +40,8 @@ services:
     restart: always
     ports:
       - "1433:1433"
+    volumes:
+      - orderdb-data:/var/opt/mssql
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Hieu@123' -C -Q 'select 1'"]
       interval: 10s
