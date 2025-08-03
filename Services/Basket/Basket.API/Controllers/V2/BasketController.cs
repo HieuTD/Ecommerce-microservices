@@ -42,8 +42,7 @@ namespace Basket.API.Controllers.V2
             }
 
             var eventMsg = BasketMapper.Mapper.Map<BasketCheckoutEventV2>(basketCheckout);
-            //KIEM TRA TAI SAO LAI PHAI MAP TAY O DAY
-            eventMsg.TotalPrice = basketCheckout.TotalPrice;
+            eventMsg.TotalPrice = basket.TotalPrice;
             await _publishEndpoint.Publish(eventMsg);
             _logger.LogInformation($"Basket Published for {basket.UserName} with V2 endpoint");
             //remove basket
