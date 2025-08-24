@@ -1,14 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./navbar/navbar.component";
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { IProduct } from './shared/models/product';
+import { IPagination } from './shared/models/pagination';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent],
+  imports: [RouterOutlet, NavbarComponent, HttpClientModule, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'client';
+export class AppComponent implements OnInit {
+  title = 'eShoping';
+  products: IProduct[] = []
+
+  constructor(private http: HttpClient) {}
+  
+  ngOnInit(): void {
+    this.http.get<IPagination<IProduct[]>>('http://localhost:8000/api/v1/Catalog/GetAllProducts').subscribe(
+      {
+        next:response => {
+          this.products = response.data,
+          console.log(response)
+        },
+        error:error => console.log(error),
+        complete:()=> {
+          console.log('Catalog API call completed');
+        }
+      }
+    )  
+  }
 }
