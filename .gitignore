@@ -482,3 +482,8 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Claude Code
+# settings.json được commit (dùng chung cho team); các file dưới đây là cá nhân
+.claude/settings.local.json
+.claude/plans/
