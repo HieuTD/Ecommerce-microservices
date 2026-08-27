@@ -1,0 +1,44 @@
+<Project>
+
+  <!--
+    Cấu hình dùng chung cho MỌI test project trong thư mục Tests/.
+    Thêm test project mới (Basket.Application.Tests, Ordering.Application.Tests...)
+    chỉ cần khai báo ProjectReference tới service cần test — toàn bộ package
+    và property dưới đây tự động được thừa hưởng.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Runner: bắt buộc để `dotnet test` nhận diện project -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+
+    <!-- Test framework -->
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+
+    <!-- Mocking -->
+    <PackageReference Include="NSubstitute" Version="6.2.0" />
+
+    <!--
+      Assertion. Dùng Shouldly thay FluentAssertions:
+      FluentAssertions từ v8 (2025) đã chuyển sang license thương mại của Xceed.
+      Shouldly miễn phí (BSD), không có ràng buộc đó.
+    -->
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="NSubstitute" />
+    <Using Include="Shouldly" />
+  </ItemGroup>
+
+</Project>

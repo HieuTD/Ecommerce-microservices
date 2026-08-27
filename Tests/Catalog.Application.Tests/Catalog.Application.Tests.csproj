@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Property và PackageReference dùng chung nằm ở Tests/Directory.Build.props.
+    Ở đây chỉ khai báo thứ riêng của project này.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\Catalog\Catalog.Application\Catalog.Application.csproj" />
+  </ItemGroup>
+
+</Project>
